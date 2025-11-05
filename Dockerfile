@@ -3,7 +3,7 @@ ENV PYTHONUNBUFFERED=true
 WORKDIR /app
 
 COPY app.py .
-COPY templates .
+COPY templates templates
 COPY requirements.txt .
 
 RUN pip install -r requirements.txt
