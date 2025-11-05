@@ -1,0 +1,13 @@
+FROM python:3.14-slim AS parent
+ENV PYTHONUNBUFFERED=true
+WORKDIR /app
+
+COPY app.py .
+COPY templates .
+COPY requirements.txt .
+
+RUN groupadd --gid 1000 appuser && \
+  useradd --uid 1000 --gid 1000 -M appuser -s /sbin/nologin -d /app && \
+  chown 1000.1000 /app
+
+ENTRYPOINT ["gunicorn", "app:app", "--bind", "0.0.0.0:8000"]

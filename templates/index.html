@@ -1,25 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Provider</th>
-      <th scope="col">Description</th>
-      <th scope="col">Last Checked</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for tracking in trackings %}
-    <tr>
-      <td>{{ tracking['id'] }}</td>
-      <td>{{ tracking['provider'] }}</td>
-      <td>{{ tracking['description'] }}</td>
-      <td>{{ tracking['last_checked'] }}</td>
-      <td><a href="/delete/{{ tracking['id'] }}"><button type="button" class="btn btn-primary" disabled>Delete</button></a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  {% for tracking in trackings %}
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{ tracking['description'] }}</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">{{ tracking['provider'] }}</h6>
+        <p class="card-text">{{ tracking['id'] }}</p>
+        {% if tracking['provider'] == "usps" %}
+        <a href="https://tools.usps.com/go/TrackConfirmAction?qtc_tLabels1={{ tracking['id'] }}" class="card-link" target="_blank">USPS Link</a>
+        {% elif tracking['provider'] == "fedex" %}
+        <a href="https://www.fedex.com/fedextrack/?trknbr={{ tracking['id'] }}" class="card-link" target="_blank">FedEx Link</a>
+        {% endif %}
+        <a href="/delete/{{ tracking['id'] }}" class="card-link">Delete</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}

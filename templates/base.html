@@ -15,7 +15,9 @@
           {{ render_nav_item('add', 'Add') }}
       </div>
   </nav>
+  <div class="container-fluid">
   {% block content %}{% endblock %}
+  </div>
   {{ bootstrap.load_js() }}
   </body>
 </html>
