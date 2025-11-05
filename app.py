@@ -35,7 +35,7 @@ def valkey_add_tracking(tracking_id: str, provider: str, description: str):
 
 def valkey_delete_tracking(tracking_id: str):
   r = valkey_get_connection(host='127.0.0.1', port=6379)
-  r.delete('tracking_id')
+  r.delete(tracking_id)
   r.quit()
 
 
@@ -69,7 +69,7 @@ def add():
     
   return render_template('add.html', form=form)
 
-@app.route('/delete/<trackingid>')
-def delete(trackingid=None):
-  valkey_delete_tracking(tracking_id=trackingid)
+@app.route('/delete/<tracking_id>')
+def delete(tracking_id=None):
+  valkey_delete_tracking(tracking_id=tracking_id)
   return redirect('/', 302)

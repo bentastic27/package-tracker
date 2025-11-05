@@ -7,6 +7,7 @@
       <th scope="col">Provider</th>
       <th scope="col">Description</th>
       <th scope="col">Last Checked</th>
+      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
@@ -16,6 +17,7 @@
       <td>{{ tracking['provider'] }}</td>
       <td>{{ tracking['description'] }}</td>
       <td>{{ tracking['last_checked'] }}</td>
+      <td><a href="/delete/{{ tracking['id'] }}"><button type="button" class="btn btn-primary" disabled>Delete</button></a></td>
     </tr>
     {% endfor %}
   </tbody>
