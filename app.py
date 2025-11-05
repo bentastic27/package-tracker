@@ -3,8 +3,10 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, validators, SelectMultipleField, SubmitField
 from flask_bootstrap import Bootstrap5
 import datetime
+import json
 import valkey
 import os
+import requests
 
 
 app = Flask(__name__)
@@ -22,6 +24,30 @@ class AddTrackingForm(FlaskForm):
   description = StringField(label="Description", validators=[validators.DataRequired()])
   submit = SubmitField(label="Add Tracking")
 
+
+def usps_get_token():
+  return requests.post(
+    url="https://apis.usps.com/oauth2/v3/token",
+    data={
+      "client_id": os.environ.get("USPS_KEY"),
+      "client_secret": os.environ.get("USPS_SECRET"),
+      "grant_type": "client_credentials",
+      "scope": "tracking"
+    }
+  ).json()['access_token']
+
+
+def usps_get_tracking(tracking_id, token):
+  return requests.post(
+    url="https://apis.usps.com/tracking/v3r2/tracking",
+    headers={
+      "accept": "application/json",
+      "authorization": "Bearer " + token
+    },
+    data={
+      "trackingNumber": tracking_id
+    }
+  ).json()
 
 def valkey_get_connection(host: str, port: int):
   return valkey.Valkey(host=host, port=port, db=0, decode_responses=True)
