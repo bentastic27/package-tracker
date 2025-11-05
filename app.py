@@ -29,7 +29,7 @@ def valkey_get_connection(host: str, port: int):
 
 def valkey_add_tracking(tracking_id: str, provider: str, description: str):
   r = valkey_get_connection(host='127.0.0.1', port=6379)
-  r.hset(name=tracking_id, mapping={'provider': provider, 'description': description, 'last_checked': str(datetime.datetime.now())})
+  r.hset(name=tracking_id, mapping={'provider': provider, 'description': description, 'last_checked': str(datetime.datetime.now)})
   r.quit()
 
 
