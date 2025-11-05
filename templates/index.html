@@ -9,14 +9,53 @@
         <h6 class="card-subtitle mb-2 text-body-secondary">{{ tracking['provider'] }}</h6>
         <p class="card-text">{{ tracking['id'] }}</p>
         {% if tracking['provider'] == "usps" %}
-        <a href="https://tools.usps.com/go/TrackConfirmAction?qtc_tLabels1={{ tracking['id'] }}" class="card-link" target="_blank">USPS Link</a>
+        <a href="https://tools.usps.com/go/TrackConfirmAction?qtc_tLabels1={{ tracking['id'] }}" class="card-link" target="_blank"><button type="button" class="btn btn-primary">USPS</button></a>
         {% elif tracking['provider'] == "fedex" %}
-        <a href="https://www.fedex.com/fedextrack/?trknbr={{ tracking['id'] }}" class="card-link" target="_blank">FedEx Link</a>
+        <a href="https://www.fedex.com/fedextrack/?trknbr={{ tracking['id'] }}" class="card-link" target="_blank"><button type="button" class="btn btn-primary">FedEx</button></a>
         {% endif %}
-        <a href="/delete/{{ tracking['id'] }}" class="card-link">Delete</a>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-tracking-id="{{ tracking['id'] }}" data-bs-description="{{ tracking['description'] }}" data-bs-provider="{{ tracking['provider'] }}">Delete</button>
       </div>
     </div>
   </div>
   {% endfor %}
 </div>
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="deleteModalLabel">some title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>something</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <a href="#" class="card-link"><button type="button" class="btn btn-danger">Delete</button></a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const deleteModal = document.getElementById('deleteModal')
+  deleteModal.addEventListener('show.bs.modal', event => {
+    // Button that triggered the modal
+    const button = event.relatedTarget
+    // Extract info from data-bs-* attributes
+    const trackingId = button.getAttribute('data-bs-tracking-id')
+    const description = button.getAttribute('data-bs-description')
+    const provider = button.getAttribute('data-bs-provider')
+    // If necessary, you could initiate an AJAX request here
+    // and then do the updating in a callback.
+    //
+    // Update the modal's content.
+    const modalTitle = deleteModal.querySelector('.modal-title')
+    const modalBody = deleteModal.querySelector('.modal-body p')
+    const modalDeleteButton = deleteModal.querySelector('.modal-footer a')
+
+    modalTitle.textContent = `Delete ${description}?`
+    modalBody.textContent = `${provider} ${trackingId}`
+    modalDeleteButton.setAttribute("href", `/delete/${trackingId}`)
+  })
+</script>
 {% endblock %}
