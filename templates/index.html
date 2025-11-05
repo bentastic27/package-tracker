@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Provider</th>
+      <th scope="col">Description</th>
+      <th scope="col">Last Checked</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for tracking in trackings %}
+    <tr>
+      <td>{{ tracking['id'] }}</td>
+      <td>{{ tracking['provider'] }}</td>
+      <td>{{ tracking['description'] }}</td>
+      <td>{{ tracking['last_checked'] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
