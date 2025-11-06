@@ -21,11 +21,16 @@ valkey_host = os.environ.get("VALKEY_HOST", "127.0.0.1")
 valkey_port = int(os.environ.get("VALKEY_PORT", "6379"))
 
 
-class AddTrackingForm(FlaskForm):
+class SetTrackingForm(FlaskForm):
   provider = SelectField(label="Provider", choices=valid_providers, validators=[validators.DataRequired()])
   tracking_id = StringField(label="Tracking ID", validators=[validators.DataRequired()])
   description = StringField(label="Description", validators=[validators.DataRequired()])
-  submit = SubmitField(label="Add Tracking")
+  submit = SubmitField(label="Submit")
+
+class EditTrackingForm(FlaskForm):
+  provider = SelectField(label="Provider", choices=valid_providers, validators=[validators.DataRequired()])
+  description = StringField(label="Description", validators=[validators.DataRequired()])
+  submit = SubmitField(label="Edit Tracking")
 
 ## TODO: get this rippin once I get the usps api
 # def usps_get_token():
@@ -57,7 +62,7 @@ def valkey_get_connection(host: str, port: int):
   return valkey.Valkey(host=host, port=port, db=0, decode_responses=True)
 
 
-def valkey_add_tracking(tracking_id: str, provider: str, description: str):
+def valkey_set_tracking(tracking_id: str, provider: str, description: str):
   r = valkey_get_connection(host=valkey_host, port=valkey_port)
   r.hset(name=tracking_id, mapping={'provider': provider, 'description': description, 'last_checked': str(datetime.datetime.now)})
   r.quit()
@@ -67,6 +72,13 @@ def valkey_delete_tracking(tracking_id: str):
   r = valkey_get_connection(host=valkey_host, port=valkey_port)
   r.delete(tracking_id)
   r.quit()
+
+
+def valkey_get_tracking(tracking_id: str):
+  r = valkey_get_connection(host=valkey_host, port=valkey_port)
+  t = r.hgetall(tracking_id)
+  t['id'] = tracking_id
+  return t
 
 
 def valkey_get_all_trackings():
@@ -84,20 +96,36 @@ def valkey_get_all_trackings():
 def index():
   return render_template('index.html', trackings=valkey_get_all_trackings())
 
-@app.route('/add', methods=['GET', 'POST'])
-def add():
-  form = AddTrackingForm(request.form)
+@app.route('/add', methods=['GET', 'POST'], endpoint="add")
+@app.route('/edit/<tracking_id>', methods=['GET', 'POST'], endpoint="edit")
+def set(tracking_id=None):
+
+  form = SetTrackingForm(request.form)
   if request.method == 'POST' and form.validate():
-    tracking_id = request.form['tracking_id']
+
+    if tracking_id is not None and tracking_id != request.form['tracking_id']:
+      valkey_delete_tracking(tracking_id)
+    
+    if tracking_id != request.form['tracking_id']:
+      tracking_id = request.form['tracking_id']
+    
     provider = request.form['provider']
     description = request.form['description']
 
-    valkey_add_tracking(tracking_id, provider, description)
+    valkey_set_tracking(tracking_id, provider, description)
 
     flash('Tracking Added')
     return redirect('/', 302)
+  
+  if tracking_id is not None:
+    t = valkey_get_tracking(tracking_id)
+    form.provider.data = t['provider']
+    form.description.data = t['description']
+    form.tracking_id.data = t['id']
+    # form.submit.label = "Edit"
     
-  return render_template('add.html', form=form)
+  return render_template('set.html', form=form)
+
 
 @app.route('/delete/<tracking_id>')
 def delete(tracking_id=None):
