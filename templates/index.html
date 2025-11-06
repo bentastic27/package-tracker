@@ -13,7 +13,7 @@
         {% elif tracking['provider'] == "fedex" %}
         <a href="https://www.fedex.com/fedextrack/?trknbr={{ tracking['id'] }}" class="card-link" target="_blank"><button type="button" class="btn btn-primary">FedEx</button></a>
         {% endif %}
-        <a href="/edit/{{ tracking['id'] }}" class="card-link" target="_blank"><button type="button" class="btn btn-secondary">Edit</button></a>
+        <a href="/edit/{{ tracking['id'] }}" class="card-link"><button type="button" class="btn btn-secondary">Edit</button></a>
         <button type="button" class="btn btn-danger card-link" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-tracking-id="{{ tracking['id'] }}" data-bs-description="{{ tracking['description'] }}" data-bs-provider="{{ tracking['provider'] }}">Delete</button>
       </div>
     </div>
