@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, flash
 from flask_wtf import FlaskForm
-from wtforms import StringField, validators, SelectMultipleField, SubmitField
+from wtforms import StringField, validators, SubmitField, SelectField
 from flask_bootstrap import Bootstrap5
 import datetime
 import valkey
@@ -13,6 +13,7 @@ bootstrap = Bootstrap5(app)
 
 app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'darkly'
 app.config['SECRET_KEY'] = os.urandom(32)
+app.config['BOOTSTRAP_SERVE_LOCAL'] = True
 
 valid_providers = ['usps', 'ups', 'fedex']
 
@@ -21,7 +22,7 @@ valkey_port = int(os.environ.get("VALKEY_PORT", "6379"))
 
 
 class AddTrackingForm(FlaskForm):
-  provider = SelectMultipleField(label="Provider", choices=valid_providers, validators=[validators.DataRequired()])
+  provider = SelectField(label="Provider", choices=valid_providers, validators=[validators.DataRequired()])
   tracking_id = StringField(label="Tracking ID", validators=[validators.DataRequired()])
   description = StringField(label="Description", validators=[validators.DataRequired()])
   submit = SubmitField(label="Add Tracking")
