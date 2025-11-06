@@ -12,7 +12,7 @@ app = Flask(__name__)
 bootstrap = Bootstrap5(app)
 
 app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'darkly'
-app.config['SECRET_KEY'] = os.urandom(32)
+app.config['SECRET_KEY'] = os.environ.get("CSRF_SECRET_KEY", os.urandom(32))
 app.config['BOOTSTRAP_SERVE_LOCAL'] = True
 
 valid_providers = ['usps', 'ups', 'fedex']
