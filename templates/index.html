@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="row row-cols-1 row-cols-md-3 g-4">
-  {% for tracking in trackings %}
+  {% for tracking in trackings | sort(attribute="description") %}
   <div class="col">
     <div class="card">
       <div class="card-body">
