@@ -12,6 +12,8 @@
         <a href="https://tools.usps.com/go/TrackConfirmAction?qtc_tLabels1={{ tracking['id'] }}" class="card-link" target="_blank"><button type="button" class="btn btn-primary">USPS</button></a>
         {% elif tracking['provider'] == "fedex" %}
         <a href="https://www.fedex.com/fedextrack/?trknbr={{ tracking['id'] }}" class="card-link" target="_blank"><button type="button" class="btn btn-primary">FedEx</button></a>
+        {% elif tracking['provider'] == "ups" %}
+        <a href="https://www.ups.com/track?trackNums={{ tracking['id'] }}" class="card-link" target="_blank"><button type="button" class="btn btn-primary">UPS</button></a>
         {% endif %}
         <a href="/edit/{{ tracking['id'] }}" class="card-link"><button type="button" class="btn btn-secondary">Edit</button></a>
         <button type="button" class="btn btn-danger card-link" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-tracking-id="{{ tracking['id'] }}" data-bs-description="{{ tracking['description'] }}" data-bs-provider="{{ tracking['provider'] }}">Delete</button>
